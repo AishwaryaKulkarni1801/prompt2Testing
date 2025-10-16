@@ -32,7 +32,18 @@ jobs:
       - name: 🏗️ Build Angular App
         run: |
           npm run build -- --base-href "/${{ github.event.repository.name }}/"
-          cp dist/prompt2Testing/index.html dist/prompt2Testing/404.html
+
+      - name: 🔍 Debug Build Output
+        run: |
+          echo "Listing dist directory structure:"
+          ls -la dist/
+          echo "Finding all index.html files:"
+          find dist -name "index.html" -type f
+
+      - name: 🛠️ Fix Angular Routing
+        run: |
+          # Find the actual build output directory and copy index.html to 404.html
+          find dist -name "index.html" -execdir cp {} 404.html \;
 
       - name: ⚙️ Setup Pages
         uses: actions/configure-pages@v5
@@ -40,7 +51,7 @@ jobs:
       - name: 📤 Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/prompt2Testing
+          path: dist
 
   deploy:
     environment:
