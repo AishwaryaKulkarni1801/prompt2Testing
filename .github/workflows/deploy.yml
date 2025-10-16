@@ -1,11 +1,8 @@
-# .github/workflows/deploy.yml
-
 name: 🚀 Deploy Angular App to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: true
 
 jobs:
@@ -28,7 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "npm"
 
       - name: 📦 Install Dependencies
         run: npm ci
@@ -36,21 +32,20 @@ jobs:
       - name: 🏗️ Build Angular App
         run: |
           npm run build -- --base-href "/${{ github.event.repository.name }}/"
-          find dist -name "index.html" -execdir cp {} 404.html \;
+          cp dist/prompt2Testing/index.html dist/prompt2Testing/404.html
 
       - name: ⚙️ Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: 📤 Upload Artifact
+      - name: 📤 Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: dist/prompt2Testing
 
   deploy:
     environment:
       name: production
       url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
     needs: build
     steps:
