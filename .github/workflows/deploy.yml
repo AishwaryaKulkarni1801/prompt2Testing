@@ -37,6 +37,13 @@ jobs:
         run: |
           npm run build -- --base-href "/${{ github.event.repository.name }}/"
 
+      - name: List build output for debugging
+        run: |
+          echo "Listing dist directory contents:"
+          ls -la dist/
+          echo "Finding index.html files:"
+          find dist -name "index.html" -type f
+
       - name: Fix routing for SPA
         run: |
           find dist -name "index.html" -execdir cp {} 404.html \;
@@ -47,7 +54,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist/prompt2-testing
+          path: dist
 
       - name: Deploy to GitHub Pages
         id: deployment
